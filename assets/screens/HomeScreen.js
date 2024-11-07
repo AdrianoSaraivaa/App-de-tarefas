@@ -1,10 +1,11 @@
-// App.js
+// screens/HomeScreen.js
 import React, { useState } from 'react';
-import { StyleSheet, View, FlatList, StatusBar, Text } from 'react-native';
-import TaskInput from './assets/components/TaskInput';
-import TaskItem from './assets/components/TaskItem';
+import { View, FlatList, StyleSheet, Button } from 'react-native';
+import TaskInput from '../assets/components/TaskInput';
+import TaskItem from '../assets/components/TaskItem';
 
-export default function App() {
+
+export default function HomeScreen({ navigation }) {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
 
@@ -15,7 +16,7 @@ export default function App() {
           t.key === editingTask.key ? { ...t, value: taskText } : t
         )
       );
-      setEditingTask(null); 
+      setEditingTask(null);
     } else {
       setTasks((currentTasks) => [
         ...currentTasks,
@@ -34,21 +35,12 @@ export default function App() {
     );
   };
 
-  const toggleCompleteTask = (taskKey) => {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.key === taskKey ? { ...task, completed: !task.completed } : task
-      )
-    );
+  const viewTaskDetails = (task) => {
+    navigation.navigate('TaskDetail', { task });
   };
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>APP de Tarefas</Text>
-        <Text style={styles.headerSubtitle}>Adriano Saraiva</Text>
-      </View>
       <TaskInput onAddTask={addTask} editingTask={editingTask} />
       <FlatList
         data={tasks}
@@ -57,7 +49,7 @@ export default function App() {
             task={item}
             onDelete={() => deleteTask(item.key)}
             onEdit={() => editTask(item)}
-            onToggleComplete={() => toggleCompleteTask(item.key)}
+            onToggleComplete={() => viewTaskDetails(item)}
           />
         )}
       />
@@ -69,23 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#222', 
-  },
-  header: {
-    padding: 20,
-    backgroundColor: '#556677',
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#fff',
-    marginTop: 5,
+    backgroundColor: '#222',
   },
 });
